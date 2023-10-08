@@ -78,8 +78,25 @@ def add():
 #   output_path = 'my_passwords.csv'
 #   row.to_csv(output_path, mode="a", header=False)
 
+def get_password():
+  try:
+    with open('data.json', 'r') as data_file:
+      data = json.load(data_file)
+  except FileNotFoundError:
+    messagebox.showerror(title='File not found', message="File does not exist")
+  else:
+    try:
+      website = data[website_input.get()]
+    except KeyError:
+      messagebox.showerror(title="No password", message="No password for that website")
+    else:
+      messagebox.showinfo(title=website_input.get(), message=f"email:{website['email']} \npassword:{website['password']}")
+
 website_label = tkinter.Label(text="Website: ")
 website_label.grid(row=1, column=0)
+
+search_button = tkinter.Button(text="Search", width=13, command=get_password)
+search_button.grid(row=1, column=2)
 
 email_label = tkinter.Label(text="Email/Username: ")
 email_label.grid(row=2, column=0)
@@ -87,8 +104,8 @@ email_label.grid(row=2, column=0)
 password_label = tkinter.Label(text="Password: ")
 password_label.grid(row=3, column=0)
 
-website_input = tkinter.Entry(width=35)
-website_input.grid(row=1, column=1, columnspan=2)
+website_input = tkinter.Entry(width=18)
+website_input.grid(row=1, column=1)
 
 email_input = tkinter.Entry(width=35)
 email_input.grid(row=2, column=1, columnspan=2)
