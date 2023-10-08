@@ -4,6 +4,7 @@ import pandas
 import os
 import random
 import pyperclip
+import json
 
 #Password Generator
 
@@ -42,6 +43,12 @@ def add():
   website = website_input.get()
   email = email_input.get()
   password = password_input.get()
+  new_data = {
+    website: {
+      "email": email,
+      "password": password
+    }
+  }
 
   if(len(email) == 0 or len(password) == 0):
     messagebox.showwarning(title='Ooops', message="Please don't leave any fields empty!")
@@ -50,11 +57,20 @@ def add():
   is_ok = messagebox.askokcancel(title=website, message=f"These are the details entered: \nEmail: {email} \nPassword: {password} \nIs it ok to save?")
 
   if is_ok:
-    with open('my_passwords.txt', "a") as data_file:
-      data_file.write(f"{website} | {email} | {password}\n")
-      website_input.delete(0, tkinter.END)
-      email_input.delete(0, tkinter.END)
-      password_input.delete(0, tkinter.END)
+    try:
+      with open('data.json', "r") as data_file:
+        #Reading old data
+        data = json.load(data_file)
+        #Updating old data
+        data.update(new_data)
+    except FileNotFoundError:
+      data = new_data
+    finally:
+      with open('data.json', 'w') as data_file:
+        #Saving updated data
+        json.dump(data, data_file, indent=4)
+        website_input.delete(0, tkinter.END)
+        password_input.delete(0, tkinter.END)
 
 
 # def add():
